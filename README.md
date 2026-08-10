@@ -7,10 +7,28 @@ Haniwa (埴輪) are the clay figures set on top of a kofun. The name is the
 relationship: the mound is the language, this is the thing standing on it that
 people actually see.
 
-> **Status: design and issues only.** No code yet. This repository exists to
-> pin down what "lighter than Tauri, with real WebRTC" has to mean before
-> anyone writes the first line. Read [docs/DESIGN.md](docs/DESIGN.md) for the
-> argument, and the issues for the plan.
+> **Status: Stage 0 in progress.** The first native host opens one system web
+> view on macOS, Windows, and Linux. It deliberately has no IPC, capabilities,
+> or WebRTC yet. Read [docs/DESIGN.md](docs/DESIGN.md) for the argument, and the
+> issues for the plan.
+
+## Build the Stage 0 host
+
+Haniwa currently needs CMake 3.24+, a C/C++ toolchain, and the platform system
+web-view development files. The host does not bundle a browser engine.
+
+```sh
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+ctest --test-dir build --output-on-failure
+./build/haniwa
+```
+
+Linux uses GTK3 and WebKitGTK 4.1 (with 4.0 accepted as a build fallback).
+macOS uses AppKit and WKWebView. Windows uses Win32 and the installed WebView2
+Runtime; CMake downloads the pinned WebView2 SDK headers and static loader at
+build time. All three load the same embedded page through
+`haniwa://app/index.html`, never `file://`.
 
 ## Why not just use Tauri
 
